@@ -31,3 +31,31 @@ void Lexer::skipComments() {
 Token Lexer::makeToken(TokenType type, const std::string& value) {
     return Token{type, value};
 }
+
+Token Lexer::nextToken() {
+    skipWhitespace();
+    skipComments();
+
+    char c = get();
+    if (c == '\0') return makeToken(TokenType::T_EOF);
+
+    // Identifiers / keywords
+    if (isalpha(c) || c == '_') {
+        std::string id(1, c);
+        while (isalnum(peek()) || peek() == '_')
+            id += get();
+
+        if (id == "int") return makeToken(TokenType::T_INT, id);
+        if (id == "float") return makeToken(TokenType::T_FLOAT, id);
+        if (id == "bool") return makeToken(TokenType::T_BOOL, id);
+        if (id == "char") return makeToken(TokenType::T_CHAR, id);
+        if (id == "string") return makeToken(TokenType::T_STRING, id);
+        if (id == "if") return makeToken(TokenType::T_IF, id);
+        if (id == "else") return makeToken(TokenType::T_ELSE, id);
+        if (id == "while") return makeToken(TokenType::T_WHILE, id);
+        if (id == "for") return makeToken(TokenType::T_FOR, id);
+        if (id == "return") return makeToken(TokenType::T_RETURN, id);
+        if (id == "fn") return makeToken(TokenType::T_IDENTIFIER, "fn");
+
+        return makeToken(TokenType::T_IDENTIFIER, id);
+    }
