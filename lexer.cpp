@@ -59,3 +59,32 @@ Token Lexer::nextToken() {
 
         return makeToken(TokenType::T_IDENTIFIER, id);
     }
+
+  
+    // Numbers
+    if (isdigit(c)) {
+        std::string num(1, c);
+        while (isdigit(peek())) num += get();
+
+        if (peek() == '.') {
+            num += get();
+            while (isdigit(peek())) num += get();
+        }
+        return makeToken(TokenType::T_NUMBER, num);
+    }
+
+    // Strings
+    if (c == '"') {
+        std::string str;
+        while (peek() != '"' && peek() != '\0')
+            str += get();
+        get(); // closing "
+        return makeToken(TokenType::T_STRING_LITERAL, str);
+    }
+
+    // Chars
+    if (c == '\'') {
+        char val = get();
+        get(); // closing '
+        return makeToken(TokenType::T_CHAR_LITERAL, std::string(1, val));
+    }
