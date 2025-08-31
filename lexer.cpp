@@ -88,3 +88,30 @@ Token Lexer::nextToken() {
         get(); // closing '
         return makeToken(TokenType::T_CHAR_LITERAL, std::string(1, val));
     }
+
+    // Operators / symbols
+    switch (c) {
+        case '+': return makeToken(TokenType::T_PLUS, "+");
+        case '-': return makeToken(TokenType::T_MINUS, "-");
+        case '*': return makeToken(TokenType::T_STAR, "*");
+        case '/': return makeToken(TokenType::T_SLASH, "/");
+        case '=': return (peek() == '=') ? (get(), makeToken(TokenType::T_EQ, "=="))
+                                         : makeToken(TokenType::T_ASSIGN, "=");
+        case '!': return (peek() == '=') ? (get(), makeToken(TokenType::T_NEQ, "!="))
+                                         : makeToken(TokenType::T_NOT, "!");
+        case '<': return (peek() == '=') ? (get(), makeToken(TokenType::T_LTE, "<="))
+                                         : makeToken(TokenType::T_LT, "<");
+        case '>': return (peek() == '=') ? (get(), makeToken(TokenType::T_GTE, ">="))
+                                         : makeToken(TokenType::T_GT, ">");
+        case '&': if (peek() == '&') { get(); return makeToken(TokenType::T_AND, "&&"); } break;
+        case '|': if (peek() == '|') { get(); return makeToken(TokenType::T_OR, "||"); } break;
+        case '(': return makeToken(TokenType::T_LPAREN, "(");
+        case ')': return makeToken(TokenType::T_RPAREN, ")");
+        case '{': return makeToken(TokenType::T_LBRACE, "{");
+        case '}': return makeToken(TokenType::T_RBRACE, "}");
+        case ';': return makeToken(TokenType::T_SEMI, ";");
+        case ',': return makeToken(TokenType::T_COMMA, ",");
+    }
+
+    return makeToken(TokenType::T_UNKNOWN, std::string(1, c));
+}
